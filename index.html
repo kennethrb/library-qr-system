@@ -101,7 +101,7 @@ h1{
     <div class="container">
 
     <!-- Replace logo.png with your school logo -->
-    logo.png
+    <img src="logo.png" class="logo" alt="School Logo">
 
     <h1>📚 Library Attendance System</h1>
 
@@ -128,7 +128,7 @@ h1{
 <script>
 
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwZt98HfRSdzgFoWVrGG3hjFuG8W7OqdVQw1R8laWfMoA29ArTQv7H88rNl6gtIbR4mmg/exec";
-const scanner = new Html5QrcodeScanner(...)
+
     function updateTime(){
 
     document.getElementById("datetime").innerHTML =
@@ -138,28 +138,22 @@ const scanner = new Html5QrcodeScanner(...)
 
 setInterval(updateTime,1000);
 updateTime();
-``
     
 let lastScan = "";
 let lastScanTime = 0;
 let scanCount = 0;
 
 function onScanSuccess(decodedText) {
+
     const now = Date.now();
 
     if(decodedText === lastScan &&
        now - lastScanTime < 10000){
         return;
     }
-    
+
     lastScan = decodedText;
     lastScanTime = now;
-
-    if(decodedText === lastScan){
-        return;
-    }
-
-    lastScan = decodedText;
 
     fetch(WEBAPP_URL,{
         method:'POST',
@@ -173,29 +167,32 @@ function onScanSuccess(decodedText) {
         if(data.success){
 
             scanCount++;
-        
+
             document.getElementById("scanCount").innerText =
             scanCount;
-        
+
             document.getElementById("lastStudent").innerText =
             data.name;
-        
+
             document.getElementById("result").innerHTML =
             `
             <div class="success">
-               ✅ Welcome<br>
-               <strong>${data.name}</strong>
+                ✅ Welcome<br>
+                <strong>${data.name}</strong>
             </div>
             `;
-        }
-        else {
+
+        } else {
+
             document.getElementById("result").innerHTML =
-            "❌ Student Not Found";
+            `
+            <div class="error">
+                ❌ Student Not Found
+            </div>
+            `;
+
         }
 
-        setTimeout(() => {
-            lastScan = "";
-        }, 3000);
     });
 
 }
