@@ -4,13 +4,15 @@
     "webapp": "https://script.google.com/macros/s/AKfycbwZt98HfRSdzgFoWVrGG3hjFuG8W7OqdVQw1R8laWfMoA29ArTQv7H88rNl6gtIbR4mmg/exec",
     "logo": "osl.png",
     "primary": "#1e3a8a",
-    "accent": "#2563eb"
+    "accent": "#2563eb",
+    "apiKey": "OSL_SECRET_KEY_987654321_ALPHA"
   },
   "mal": {
     "name": "Maplewood Academy Library",
     "webapp": "https://script.google.com/macros/s/AKfycbxgu0mZjCS4GH3VsOTy3Cp3myAIMpT-rof-Dflv3IifyefqTJrR5_fZSp3pP2U9gOUyYA/exec",
     "logo": "mal.png",
     "primary": "#064e3b",
-    "accent": "#10b981"
+    "accent": "#10b981",
+    "apiKey": "MAL_SECRET_KEY_123456789_BETA"
   }
 }
