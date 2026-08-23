@@ -8,48 +8,89 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 15px;
-    margin: 0;
-    background: #f5f5f5;
+body{
+    margin:0;
+    padding:20px;
+    font-family:'Segoe UI',sans-serif;
+    background:#f5f7fb;
 }
 
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    margin-top: 20px;
+.container{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
 }
 
-h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+.logo{
+    width:100px;
+    display:block;
+    margin:auto;
+    margin-bottom:15px;
 }
 
-#reader {
-    width: 100% !important;
-    max-width: 400px;
-    margin: auto;
-    border-radius: 10px;
-    overflow: hidden;
+h1{
+    text-align:center;
+    color:#003366;
+    font-size:28px;
 }
 
-#result {
-    margin-top: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
+#datetime{
+    text-align:center;
+    margin-bottom:20px;
+    color:#666;
 }
 
-@media (max-width: 480px) {
-    h2 {
-        font-size: 1.2rem;
-    }
+#reader{
+    width:100% !important;
+    border-radius:12px;
+    overflow:hidden;
+}
 
-    #result {
-        font-size: 1rem;
+.stats{
+    display:flex;
+    justify-content:center;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    background:#f8f9fa;
+    border-radius:12px;
+    padding:12px;
+    width:150px;
+}
+
+.stat-card span{
+    display:block;
+    font-size:30px;
+    font-weight:bold;
+}
+
+.success{
+    background:#d4edda;
+    color:#155724;
+    padding:15px;
+    border-radius:10px;
+}
+
+.error{
+    background:#f8d7da;
+    color:#721c24;
+    padding:15px;
+    border-radius:10px;
+}
+
+.last-student{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+@media(max-width:480px){
+    h1{
+        font-size:22px;
     }
 }
 </style>
@@ -57,22 +98,62 @@ h2 {
 
 <body>
 
-<div class="container">
-    <h2>📚 Library Attendance System</h2>
-    <p>Scan Student QR Code</p>
+    <div class="container">
+
+    <!-- Replace logo.png with your school logo -->
+    logo.png
+
+    <h1>📚 Library Attendance System</h1>
+
+    <div id="datetime"></div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <span id="scanCount">0</span>
+            <small>Today's Scans</small>
+        </div>
+    </div>
 
     <div id="reader"></div>
 
     <div id="result"></div>
+
+    <div class="last-student">
+        Last Scan:
+        <span id="lastStudent">None</span>
+    </div>
+
 </div>
 
 <script>
 
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwZt98HfRSdzgFoWVrGG3hjFuG8W7OqdVQw1R8laWfMoA29ArTQv7H88rNl6gtIbR4mmg/exec";
+const scanner = new Html5QrcodeScanner(...)
+    function updateTime(){
 
+    document.getElementById("datetime").innerHTML =
+    new Date().toLocaleString();
+
+}
+
+setInterval(updateTime,1000);
+updateTime();
+``
+    
 let lastScan = "";
+let lastScanTime = 0;
+let scanCount = 0;
 
 function onScanSuccess(decodedText) {
+    const now = Date.now();
+
+    if(decodedText === lastScan &&
+       now - lastScanTime < 10000){
+        return;
+    }
+    
+    lastScan = decodedText;
+    lastScanTime = now;
 
     if(decodedText === lastScan){
         return;
@@ -90,11 +171,24 @@ function onScanSuccess(decodedText) {
     .then(data => {
 
         if(data.success){
+
+            scanCount++;
+        
+            document.getElementById("scanCount").innerText =
+            scanCount;
+        
+            document.getElementById("lastStudent").innerText =
+            data.name;
+        
             document.getElementById("result").innerHTML =
-`<div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;">
-✅ Welcome ${data.name}
-</div>`;
-        } else {
+            `
+            <div class="success">
+               ✅ Welcome<br>
+               <strong>${data.name}</strong>
+            </div>
+            `;
+        }
+        else {
             document.getElementById("result").innerHTML =
             "❌ Student Not Found";
         }
