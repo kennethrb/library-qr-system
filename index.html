@@ -272,7 +272,53 @@ h3 {
     text-decoration: underline !important;
 }
 
-    
+/* Center all internally generated elements inside the reader container */
+#reader {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+/* Force inner wrapper divs and sections to take full width and stay centered */
+#reader > div,
+#reader__scan_region,
+#reader__dashboard,
+#reader__dashboard_section,
+#reader__dashboard_section_csr {
+    width: 100% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+/* Align inline controls (select dropdown, text, buttons) cleanly */
+#reader__dashboard_section_csr span {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-right: 0 !important;
+}    
+/* Fix gray text labels in camera selection view */
+#reader__dashboard_section_csr span,
+#reader__dashboard_section_swaplink {
+    color: #f8fafc !important;
+}
+
+/* Brighten the phone/camera graphic and info icons on dark backgrounds */
+#reader img[src*="data:image"] {
+    filter: invert(1) brightness(1.8) !important;
+}
+
+/* Ensure dropdown selector has clean padding and alignment */
+#reader select {
+    outline: none !important;
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}    
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
