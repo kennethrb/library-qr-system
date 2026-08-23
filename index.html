@@ -182,7 +182,45 @@ h3 {
     color: var(--text-muted);
     font-size: 11px;
     font-weight: 500;
-}   
+}
+
+/* Center and contain the footer */
+.footer {
+    margin-top: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    width: 100%;
+}
+
+/* Fix camera selector dropdown & buttons inside dark reader container */
+#reader select, 
+#reader button {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    margin: 6px auto !important;
+}
+
+#reader button:hover {
+    background-color: #f1f5f9 !important;
+}
+
+/* Style the text links inside camera view (e.g., Scan an Image File) */
+#reader a {
+    color: #38bdf8 !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+}
+
+#reader span {
+    color: #e2e8f0 !important;
+}    
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
@@ -233,11 +271,12 @@ h3 {
         <span id="lastStudent">None</span>
     </div>
 
-</div>
-    
 <div class="footer">
 Version 1.0 | Powered by QR Technology
 </div>
+        
+</div>
+    
 
 <script>
 let WEBAPP_URL = "";
