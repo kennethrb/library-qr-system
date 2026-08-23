@@ -352,6 +352,15 @@ async function loadSchoolConfig() {
         WEBAPP_URL = school.webapp;
         document.querySelector("h1").innerText = school.name;
         document.getElementById("schoolLogo").src = school.logo;
+
+        // Apply dynamic school colors to CSS root variables
+        if (school.primary) {
+            document.documentElement.style.setProperty('--primary', school.primary);
+        }
+        if (school.accent) {
+            document.documentElement.style.setProperty('--accent', school.accent);
+        }
+
         return true;
     } catch (err) {
         document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Failed to load configuration</h1>";
