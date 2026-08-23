@@ -359,16 +359,20 @@ async function loadSchoolConfig() {
     }
 }
 
-async function fetchTodayCount() {
+async function fetchInitialData() {
     if (!WEBAPP_URL) return;
     try {
         const response = await fetch(WEBAPP_URL);
         const data = await response.json();
+        
         if (data.todayCount !== undefined) {
             document.getElementById("scanCount").innerText = data.todayCount;
         }
+        if (data.lastStudent) {
+            document.getElementById("lastStudent").innerText = data.lastStudent;
+        }
     } catch (err) {
-        console.error("Failed to fetch initial scan count:", err);
+        console.error("Failed to fetch initial state:", err);
         document.getElementById("scanCount").innerText = "0";
     }
 }
@@ -424,11 +428,11 @@ async function onScanSuccess(decodedText) {
     }
 }
 
-// Initialize scanner and fetch count only after successful config load
+// Initialize scanner and state only after config loads
 loadSchoolConfig().then(async (isLoaded) => {
     if (!isLoaded) return;
 
-    await fetchTodayCount();
+    await fetchInitialData();
 
     const scanner = new Html5QrcodeScanner("reader", {
         fps: 10,
