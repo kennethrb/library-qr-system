@@ -221,7 +221,58 @@ h3 {
 #reader span {
     color: #e2e8f0 !important;
 }    
+/* Container background for the scanner */
+#reader {
+    background: #0f172a !important;
+    padding: 10px !important;
+}
 
+/* Fix drop zone border and text contrast */
+#reader__scan_region, 
+#reader__dashboard_section_csr {
+    background: transparent !important;
+    color: #f8fafc !important;
+}
+
+/* Style the file input button and dashboard controls */
+#reader input[type="file"] {
+    display: none !important; /* Hide ugly native browser file input text */
+}
+
+#reader label {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    margin-bottom: 10px !important;
+}
+
+/* Fix "Or drop an image to scan" text color */
+#reader span, 
+#reader div {
+    color: #cbd5e1 !important;
+    font-size: 13px !important;
+}
+
+/* Style links (e.g. "Scan using camera directly") */
+#reader a {
+    color: #38bdf8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    display: inline-block !important;
+    margin-top: 10px !important;
+}
+
+#reader a:hover {
+    text-decoration: underline !important;
+}
+
+    
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
