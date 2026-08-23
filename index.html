@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
 <meta charset="utf-8">
 <title>Library QR Scanner</title>
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -123,10 +122,16 @@ h3 {
     border-radius: 14px;
     overflow: hidden;
     border: none !important;
-    background: #000;
+    background: #0f172a !important;
+    padding: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
 }
 
-/* Custom Overrides for html5-qrcode UI elements */
 #reader video {
     object-fit: cover;
     border-radius: 14px;
@@ -177,15 +182,6 @@ h3 {
 }
 
 .footer {
-    margin-top: 24px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 500;
-}
-
-/* Center and contain the footer */
-.footer {
     margin-top: 20px;
     text-align: center;
     color: var(--text-muted);
@@ -193,7 +189,6 @@ h3 {
     width: 100%;
 }
 
-/* Fix camera selector dropdown & buttons inside dark reader container */
 #reader select, 
 #reader button {
     background-color: #ffffff !important;
@@ -211,32 +206,14 @@ h3 {
     background-color: #f1f5f9 !important;
 }
 
-/* Style the text links inside camera view (e.g., Scan an Image File) */
-#reader a {
-    color: #38bdf8 !important;
-    text-decoration: none !important;
-    font-size: 13px !important;
-}
-
-#reader span {
-    color: #e2e8f0 !important;
-}    
-/* Container background for the scanner */
-#reader {
-    background: #0f172a !important;
-    padding: 10px !important;
-}
-
-/* Fix drop zone border and text contrast */
 #reader__scan_region, 
 #reader__dashboard_section_csr {
     background: transparent !important;
     color: #f8fafc !important;
 }
 
-/* Style the file input button and dashboard controls */
 #reader input[type="file"] {
-    display: none !important; /* Hide ugly native browser file input text */
+    display: none !important;
 }
 
 #reader label {
@@ -251,14 +228,12 @@ h3 {
     margin-bottom: 10px !important;
 }
 
-/* Fix "Or drop an image to scan" text color */
 #reader span, 
 #reader div {
     color: #cbd5e1 !important;
     font-size: 13px !important;
 }
 
-/* Style links (e.g. "Scan using camera directly") */
 #reader a {
     color: #38bdf8 !important;
     text-decoration: none !important;
@@ -272,17 +247,6 @@ h3 {
     text-decoration: underline !important;
 }
 
-/* Center all internally generated elements inside the reader container */
-#reader {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    box-sizing: border-box !important;
-}
-
-/* Force inner wrapper divs and sections to take full width and stay centered */
 #reader > div,
 #reader__scan_region,
 #reader__dashboard,
@@ -294,31 +258,29 @@ h3 {
     box-sizing: border-box !important;
 }
 
-/* Align inline controls (select dropdown, text, buttons) cleanly */
 #reader__dashboard_section_csr span {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     gap: 8px !important;
     margin-right: 0 !important;
-}    
-/* Fix gray text labels in camera selection view */
+} 
+
 #reader__dashboard_section_csr span,
 #reader__dashboard_section_swaplink {
     color: #f8fafc !important;
 }
 
-/* Brighten the phone/camera graphic and info icons on dark backgrounds */
 #reader img[src*="data:image"] {
     filter: invert(1) brightness(1.8) !important;
 }
 
-/* Ensure dropdown selector has clean padding and alignment */
 #reader select {
     outline: none !important;
     color: #0f172a !important;
     font-weight: 600 !important;
-}    
+} 
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
@@ -341,39 +303,35 @@ h3 {
 <body>
 
     <div class="container">
+        <img id="schoolLogo" src="logo.png" class="logo" alt="School Logo">
 
-    <!-- Replace logo.png with your school logo -->
-    <img id="schoolLogo" src="logo.png" class="logo" alt="School Logo">
+        <h1>ABC National High School</h1>
+        <h3>Library Attendance Monitoring System</h3>
 
-    <h1>ABC National High School</h1>
-    <h3>Library Attendance Monitoring System</h3>
+        <div style="text-align: center;">
+            <div id="datetime"></div>
+        </div>
 
-    <div style="text-align: center;">
-    <div id="datetime"></div>
-    </div>
+        <div class="stats">
+            <div class="stat-card">
+                <span id="scanCount">...</span>
+                <small>Today's Scans</small>
+            </div>
+        </div>
 
-    <div class="stats">
-        <div class="stat-card">
-            <span id="scanCount">0</span>
-            <small>Today's Scans</small>
+        <div id="reader"></div>
+
+        <div id="result"></div>
+
+        <div class="last-student">
+            Last Scan:
+            <span id="lastStudent">None</span>
+        </div>
+
+        <div class="footer">
+            Version 1.0 | Powered by QR Technology
         </div>
     </div>
-
-    <div id="reader"></div>
-
-    <div id="result"></div>
-
-    <div class="last-student">
-        Last Scan:
-        <span id="lastStudent">None</span>
-    </div>
-
-<div class="footer">
-Version 1.0 | Powered by QR Technology
-</div>
-        
-</div>
-    
 
 <script>
 let WEBAPP_URL = "";
@@ -401,6 +359,20 @@ async function loadSchoolConfig() {
     }
 }
 
+async function fetchTodayCount() {
+    if (!WEBAPP_URL) return;
+    try {
+        const response = await fetch(WEBAPP_URL);
+        const data = await response.json();
+        if (data.todayCount !== undefined) {
+            document.getElementById("scanCount").innerText = data.todayCount;
+        }
+    } catch (err) {
+        console.error("Failed to fetch initial scan count:", err);
+        document.getElementById("scanCount").innerText = "0";
+    }
+}
+
 function updateTime() {
     document.getElementById("datetime").innerHTML = new Date().toLocaleString();
 }
@@ -409,7 +381,6 @@ updateTime();
 
 let lastScan = "";
 let lastScanTime = 0;
-let scanCount = 0;
 
 async function onScanSuccess(decodedText) {
     const now = Date.now();
@@ -423,7 +394,6 @@ async function onScanSuccess(decodedText) {
     lastScanTime = now;
 
     try {
-        // Using text/plain prevents the preflight OPTIONS request on Google Apps Script
         const response = await fetch(WEBAPP_URL, {
             method: 'POST',
             headers: {
@@ -435,8 +405,9 @@ async function onScanSuccess(decodedText) {
         const data = await response.json();
 
         if (data.success) {
-            scanCount++;
-            document.getElementById("scanCount").innerText = scanCount;
+            if (data.todayCount !== undefined) {
+                document.getElementById("scanCount").innerText = data.todayCount;
+            }
             document.getElementById("lastStudent").innerText = data.name;
             document.getElementById("result").innerHTML = `
                 <div class="success">
@@ -453,9 +424,11 @@ async function onScanSuccess(decodedText) {
     }
 }
 
-// Initialize scanner only after successful config load
-loadSchoolConfig().then((isLoaded) => {
+// Initialize scanner and fetch count only after successful config load
+loadSchoolConfig().then(async (isLoaded) => {
     if (!isLoaded) return;
+
+    await fetchTodayCount();
 
     const scanner = new Html5QrcodeScanner("reader", {
         fps: 10,
