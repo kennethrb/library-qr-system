@@ -373,8 +373,8 @@ h3 {
         <div class="loader-content">
 
             <img id="loaderLogo"
-                 src="logo.png"
-              tagline">
+             src="logo.png"
+             alt="EntryLeaf QR Logo">
                 QR-Powered Library Attendance Platform
             </p>
 
@@ -388,21 +388,6 @@ h3 {
     </div>
 
     <!-- Main System -->
-    <div class="container" id="mainContent" style="display:none;">
-        logo.png
-        
-        <h1>EntryLeaf QR</h1>
-
-        <p class="tagline">
-            QR-Powered Library Attendance Platform
-        </p>
-
-        <div class="spinner"></div>
-
-        <p id="loadingText">
-            Loading school configuration...
-        </p>
-    </div>
     </div>
 
     <div class="container" id="mainContent" style="display:none;">
@@ -598,13 +583,18 @@ loadSchoolConfig().then(async (isLoaded) => {
 
     setTimeout(() => {
 
-        document.getElementById("loader").style.opacity = "0";
+    document.getElementById("loader").style.opacity = "0";
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            document.getElementById("loader").remove();
+        document.getElementById("loader").remove();
 
-            document.
+        document.getElementById("mainContent").style.display = "block";
+
+    }, 500);
+
+}, 800);
+
 });
 </script>
 
