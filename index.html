@@ -336,10 +336,10 @@ h3 {
 
 <script>
 let WEBAPP_URL = "";
+let API_KEY = "";
 
 const schoolCode = new URLSearchParams(window.location.search).get("school");
 
-// Web Audio API beep generator (no external audio file required)
 function playBeep() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -347,14 +347,14 @@ function playBeep() {
         const gainNode = audioCtx.createGain();
 
         oscillator.type = 'sine';
-        oscillator.frequency.value = 880; // A5 tone
+        oscillator.frequency.value = 880;
         gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
 
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
         oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.15); // Plays for 150ms
+        oscillator.stop(audioCtx.currentTime + 0.15);
     } catch (e) {
         console.log("Audio play prevented or unsupported.");
     }
@@ -372,10 +372,11 @@ async function loadSchoolConfig() {
         }
 
         WEBAPP_URL = school.webapp;
+        API_KEY = school.apiKey || "";
+
         document.querySelector("h1").innerText = school.name;
         document.getElementById("schoolLogo").src = school.logo;
 
-        // Apply dynamic school colors if present in schools.json
         if (school.primary) {
             document.documentElement.style.setProperty('--primary', school.primary);
         }
@@ -393,14 +394,16 @@ async function loadSchoolConfig() {
 async function fetchInitialData() {
     if (!WEBAPP_URL) return;
     try {
-        const response = await fetch(WEBAPP_URL);
+        const response = await fetch(`${WEBAPP_URL}?key=${encodeURIComponent(API_KEY)}`);
         const data = await response.json();
         
-        if (data.todayCount !== undefined) {
-            document.getElementById("scanCount").innerText = data.todayCount;
-        }
-        if (data.lastStudent) {
-            document.getElementById("lastStudent").innerText = data.lastStudent;
+        if (data.success) {
+            if (data.todayCount !== undefined) {
+                document.getElementById("scanCount").innerText = data.todayCount;
+            }
+            if (data.lastStudent) {
+                document.getElementById("lastStudent").innerText = data.lastStudent;
+            }
         }
     } catch (err) {
         console.error("Failed to fetch initial state:", err);
@@ -420,7 +423,6 @@ let lastScanTime = 0;
 async function onScanSuccess(decodedText) {
     const now = Date.now();
 
-    // 10-second duplicate scan prevention
     if (decodedText === lastScan && now - lastScanTime < 10000) {
         return;
     }
@@ -434,14 +436,16 @@ async function onScanSuccess(decodedText) {
             headers: {
                 'Content-Type': 'text/plain;charset=utf-8'
             },
-            body: JSON.stringify({ studentId: decodedText })
+            body: JSON.stringify({ 
+                studentId: decodedText,
+                key: API_KEY 
+            })
         });
 
         const data = await response.json();
 
         if (data.success) {
-            playBeep(); // Audio feedback plays only on successful match
-            
+            playBeep();
             if (data.todayCount !== undefined) {
                 document.getElementById("scanCount").innerText = data.todayCount;
             }
@@ -453,7 +457,7 @@ async function onScanSuccess(decodedText) {
                 </div>`;
         } else {
             document.getElementById("result").innerHTML = `
-                <div class="error">❌ Student Not Found</div>`;
+                <div class="error">❌ ${data.message || 'Student Not Found'}</div>`;
         }
     } catch (error) {
         document.getElementById("result").innerHTML = `
@@ -461,7 +465,6 @@ async function onScanSuccess(decodedText) {
     }
 }
 
-// Initialize scanner and state only after config loads
 loadSchoolConfig().then(async (isLoaded) => {
     if (!isLoaded) return;
 
