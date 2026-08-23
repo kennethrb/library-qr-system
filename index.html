@@ -148,126 +148,90 @@ Version 1.0 | Powered by QR Technology
 </div>
 
 <script>
-
 let WEBAPP_URL = "";
 
-const schoolCode =
-new URLSearchParams(window.location.search)
-.get("school");
+const schoolCode = new URLSearchParams(window.location.search).get("school");
 
-async function loadSchoolConfig(){
+async function loadSchoolConfig() {
+    try {
+        const response = await fetch("schools.json");
+        const schools = await response.json();
+        const school = schools[schoolCode];
 
-    const response =
-    await fetch("schools.json");
+        if (!school) {
+            document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Invalid or Missing School Code</h1>";
+            return false;
+        }
 
-    const schools =
-    await response.json();
-
-    const school =
-    schools[schoolCode];
-
-    if(!school){
-
-        document.body.innerHTML =
-        "<h1>Invalid School</h1>";
-
-        return;
+        WEBAPP_URL = school.webapp;
+        document.querySelector("h1").innerText = school.name;
+        document.getElementById("schoolLogo").src = school.logo;
+        return true;
+    } catch (err) {
+        document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Failed to load configuration</h1>";
+        return false;
     }
-
-    WEBAPP_URL = school.webapp;
-
-    document.querySelector("h1").innerText =
-    school.name;
-
-    document.getElementById("schoolLogo").src =
-    school.logo;
-
 }
 
-    function updateTime(){
-
-    document.getElementById("datetime").innerHTML =
-    new Date().toLocaleString();
-
+function updateTime() {
+    document.getElementById("datetime").innerHTML = new Date().toLocaleString();
 }
-
-setInterval(updateTime,1000);
+setInterval(updateTime, 1000);
 updateTime();
-    
+
 let lastScan = "";
 let lastScanTime = 0;
 let scanCount = 0;
 
-function onScanSuccess(decodedText) {
-
+async function onScanSuccess(decodedText) {
     const now = Date.now();
 
-    if(decodedText === lastScan &&
-       now - lastScanTime < 10000){
+    // 10-second duplicate scan prevention
+    if (decodedText === lastScan && now - lastScanTime < 10000) {
         return;
     }
 
     lastScan = decodedText;
     lastScanTime = now;
 
-    fetch(WEBAPP_URL,{
-        method:'POST',
-        body: JSON.stringify({
-            studentId: decodedText
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+        const response = await fetch(WEBAPP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentId: decodedText })
+        });
 
-        if(data.success){
+        const data = await response.json();
 
+        if (data.success) {
             scanCount++;
-
-            document.getElementById("scanCount").innerText =
-            scanCount;
-
-            document.getElementById("lastStudent").innerText =
-            data.name;
-
-            document.getElementById("result").innerHTML =
-            `
-            <div class="success">
-                <div style="font-size:20px;">✅ Welcome</div>
-                <div style="font-size:28px;font-weight:bold;margin-top:5px;">
-                    ${data.name}
-                </div>
-            </div>
-            `;
-
+            document.getElementById("scanCount").innerText = scanCount;
+            document.getElementById("lastStudent").innerText = data.name;
+            document.getElementById("result").innerHTML = `
+                <div class="success">
+                    <div style="font-size:20px;">✅ Welcome</div>
+                    <div style="font-size:28px;font-weight:bold;margin-top:5px;">${data.name}</div>
+                </div>`;
         } else {
-
-            document.getElementById("result").innerHTML =
-            `
-            <div class="error">
-                ❌ Student Not Found
-            </div>
-            `;
-
+            document.getElementById("result").innerHTML = `
+                <div class="error">❌ Student Not Found</div>`;
         }
-
-    });
-
+    } catch (error) {
+        document.getElementById("result").innerHTML = `
+            <div class="error">⚠️ Network/Server Error</div>`;
+    }
 }
 
+// Initialize scanner only after successful config load
+loadSchoolConfig().then((isLoaded) => {
+    if (!isLoaded) return;
 
-loadSchoolConfig().then(() => {
-
-    const scanner =
-    new Html5QrcodeScanner(
-        "reader",
-        {
-            fps:10,
-            qrbox:250
-        }
-    );
+    const scanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250
+    });
 
     scanner.render(onScanSuccess);
-
 });
 
 </script>
