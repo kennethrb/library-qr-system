@@ -118,7 +118,7 @@ h3{
     <div class="container">
 
     <!-- Replace logo.png with your school logo -->
-    <img src="logo.png" class="logo" alt="School Logo">
+    <img id="schoolLogo" src="logo.png" class="logo" alt="School Logo">
 
     <h1>ABC National High School</h1>
     <h3>Library Attendance Monitoring System</h3>
@@ -179,9 +179,10 @@ async function loadSchoolConfig(){
     document.querySelector("h1").innerText =
     school.name;
 
-}
+    document.getElementById("schoolLogo").src =
+    school.logo;
 
-loadSchoolConfig();
+}
 
     function updateTime(){
 
@@ -253,13 +254,6 @@ function onScanSuccess(decodedText) {
 
 }
 
-const scanner = new Html5QrcodeScanner(
-    "reader",
-    {
-        fps: 10,
-        qrbox: 250
-    }
-);
 
 loadSchoolConfig().then(() => {
 
