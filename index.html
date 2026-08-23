@@ -255,6 +255,14 @@ h3 {
     width: 100%;
 }
 
+.loader-title{
+    margin:10px 0 6px;
+    font-size:32px;
+    font-weight:800;
+    color:var(--primary);
+    letter-spacing:-0.03em;
+}
+
 #reader select, 
 #reader button {
     background-color: #ffffff !important;
@@ -375,6 +383,12 @@ h3 {
             <img id="loaderLogo"
              src="logo.png"
              alt="EntryLeaf QR Logo">
+        
+            <h2 class="loader-title">
+                EntryLeaf QR
+            </h2>
+            
+            <p class="tagline">
                 QR-Powered Library Attendance Platform
             </p>
 
@@ -453,7 +467,7 @@ function playBeep() {
 
 async function loadSchoolConfig() {
 
-    setLoadingMessage("Loading school configuration...");
+    setLoadingMessage("Loading school settings...");
     
     try {
         const response = await fetch("schools.json");
@@ -471,7 +485,7 @@ async function loadSchoolConfig() {
         document.querySelector("h1").innerText = school.name;
         document.getElementById("schoolLogo").src = school.logo;
         document.getElementById("loaderLogo").src = school.logo;
-        setLoadingMessage("Loading school branding...");
+        setLoadingMessage("Applying school branding...");
 
         if (school.primary) {
             document.documentElement.style.setProperty('--primary', school.primary);
@@ -565,10 +579,10 @@ loadSchoolConfig().then(async (isLoaded) => {
 
     if (!isLoaded) return;
 
-    setLoadingMessage("Loading attendance dashboard...");
+    setLoadingMessage("Preparing attendance dashboard...");
     await fetchInitialData();
 
-    setLoadingMessage("Initializing QR scanner...");
+    setLoadingMessage("Initializing scanner...");
 
     const scanner = new Html5QrcodeScanner(
         "reader",
@@ -580,6 +594,8 @@ loadSchoolConfig().then(async (isLoaded) => {
     );
 
     scanner.render(onScanSuccess);
+
+    setLoadingMessage("Ready.");
 
     setTimeout(() => {
 
