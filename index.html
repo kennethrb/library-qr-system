@@ -149,7 +149,39 @@ Version 1.0 | Powered by QR Technology
 
 <script>
 
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwZt98HfRSdzgFoWVrGG3hjFuG8W7OqdVQw1R8laWfMoA29ArTQv7H88rNl6gtIbR4mmg/exec";
+let WEBAPP_URL = "";
+
+const schoolCode =
+new URLSearchParams(window.location.search)
+.get("school");
+
+async function loadSchoolConfig(){
+
+    const response =
+    await fetch("schools.json");
+
+    const schools =
+    await response.json();
+
+    const school =
+    schools[schoolCode];
+
+    if(!school){
+
+        document.body.innerHTML =
+        "<h1>Invalid School</h1>";
+
+        return;
+    }
+
+    WEBAPP_URL = school.webapp;
+
+    document.querySelector("h1").innerText =
+    school.name;
+
+}
+
+loadSchoolConfig();
 
     function updateTime(){
 
@@ -229,7 +261,20 @@ const scanner = new Html5QrcodeScanner(
     }
 );
 
-scanner.render(onScanSuccess);
+loadSchoolConfig().then(() => {
+
+    const scanner =
+    new Html5QrcodeScanner(
+        "reader",
+        {
+            fps:10,
+            qrbox:250
+        }
+    );
+
+    scanner.render(onScanSuccess);
+
+});
 
 </script>
 
