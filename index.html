@@ -7,6 +7,71 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
+#loader{
+    position:fixed;
+    inset:0;
+    background:#ffffff;
+    z-index:9999;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    transition:opacity 0.5s ease;
+}
+
+.loader-content{
+    text-align:center;
+    padding:20px;
+}
+
+#loaderLogo{
+    width:100px;
+    height:100px;
+    object-fit:contain;
+    margin-bottom:15px;
+}
+
+.loader-content h1{
+    margin:0;
+    color:#1e293b;
+    font-size:28px;
+}
+
+.tagline{
+    color:#64748b;
+    margin-top:8px;
+    margin-bottom:20px;
+}
+
+.spinner{
+    width:50px;
+    height:50px;
+
+    border:4px solid #e2e8f0;
+    border-top:4px solid var(--accent);
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+    margin:0 auto 15px;
+}
+
+#loadingText{
+    color:#64748b;
+    font-size:14px;
+}
+
+@keyframes spin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+    
 :root {
     --primary: #1e293b;
     --accent: #2563eb;
@@ -303,7 +368,44 @@ h3 {
 
 <body>
 
-    <div class="container">
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-content">
+
+            <img id="loaderLogo"
+                 src="logo.png"
+              tagline">
+                QR-Powered Library Attendance Platform
+            </p>
+
+            <div class="spinner"></div>
+
+            <p id="loadingText">
+                Loading school configuration...
+            </p>
+
+        </div>
+    </div>
+
+    <!-- Main System -->
+    <div class="container" id="mainContent" style="display:none;">
+        logo.png
+        
+        <h1>EntryLeaf QR</h1>
+
+        <p class="tagline">
+            QR-Powered Library Attendance Platform
+        </p>
+
+        <div class="spinner"></div>
+
+        <p id="loadingText">
+            Loading school configuration...
+        </p>
+    </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display:none;">
         <img id="schoolLogo" src="logo.png" class="logo" alt="School Logo">
 
         <h1>ABC National High School</h1>
@@ -338,6 +440,10 @@ h3 {
 let WEBAPP_URL = "";
 let API_KEY = "";
 
+function setLoadingMessage(message){
+    document.getElementById("loadingText").textContent = message;
+}
+
 const schoolCode = new URLSearchParams(window.location.search).get("school");
 
 function playBeep() {
@@ -361,6 +467,9 @@ function playBeep() {
 }
 
 async function loadSchoolConfig() {
+
+    setLoadingMessage("Loading school configuration...");
+    
     try {
         const response = await fetch("schools.json");
         const schools = await response.json();
@@ -376,6 +485,8 @@ async function loadSchoolConfig() {
 
         document.querySelector("h1").innerText = school.name;
         document.getElementById("schoolLogo").src = school.logo;
+        document.getElementById("loaderLogo").src = school.logo;
+        setLoadingMessage("Loading school branding...");
 
         if (school.primary) {
             document.documentElement.style.setProperty('--primary', school.primary);
@@ -466,17 +577,34 @@ async function onScanSuccess(decodedText) {
 }
 
 loadSchoolConfig().then(async (isLoaded) => {
+
     if (!isLoaded) return;
 
+    setLoadingMessage("Loading attendance dashboard...");
     await fetchInitialData();
 
-    const scanner = new Html5QrcodeScanner("reader", {
-        fps: 10,
-        qrbox: 250,
-        aspectRatio: 1.0
-    });
+    setLoadingMessage("Initializing QR scanner...");
+
+    const scanner = new Html5QrcodeScanner(
+        "reader",
+        {
+            fps: 10,
+            qrbox: 250,
+            aspectRatio: 1.0
+        }
+    );
 
     scanner.render(onScanSuccess);
+
+    setTimeout(() => {
+
+        document.getElementById("loader").style.opacity = "0";
+
+        setTimeout(() => {
+
+            document.getElementById("loader").remove();
+
+            document.
 });
 </script>
 
