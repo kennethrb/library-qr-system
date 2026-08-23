@@ -91,7 +91,9 @@ function onScanSuccess(decodedText) {
 
         if(data.success){
             document.getElementById("result").innerHTML =
-            "✅ Welcome " + data.name;
+`<div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;">
+✅ Welcome ${data.name}
+</div>`;
         } else {
             document.getElementById("result").innerHTML =
             "❌ Student Not Found";
