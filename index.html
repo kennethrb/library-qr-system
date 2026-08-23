@@ -41,6 +41,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(226, 232, 240, 0.8);
+    border-top: 5px solid var(--accent);
 }
 
 .logo {
@@ -338,6 +339,27 @@ let WEBAPP_URL = "";
 
 const schoolCode = new URLSearchParams(window.location.search).get("school");
 
+// Web Audio API beep generator (no external audio file required)
+function playBeep() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 880; // A5 tone
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.15); // Plays for 150ms
+    } catch (e) {
+        console.log("Audio play prevented or unsupported.");
+    }
+}
+
 async function loadSchoolConfig() {
     try {
         const response = await fetch("schools.json");
@@ -353,7 +375,7 @@ async function loadSchoolConfig() {
         document.querySelector("h1").innerText = school.name;
         document.getElementById("schoolLogo").src = school.logo;
 
-        // Apply dynamic school colors to CSS root variables
+        // Apply dynamic school colors if present in schools.json
         if (school.primary) {
             document.documentElement.style.setProperty('--primary', school.primary);
         }
@@ -418,6 +440,8 @@ async function onScanSuccess(decodedText) {
         const data = await response.json();
 
         if (data.success) {
+            playBeep(); // Audio feedback plays only on successful match
+            
             if (data.todayCount !== undefined) {
                 document.getElementById("scanCount").innerText = data.todayCount;
             }
@@ -445,7 +469,8 @@ loadSchoolConfig().then(async (isLoaded) => {
 
     const scanner = new Html5QrcodeScanner("reader", {
         fps: 10,
-        qrbox: 250
+        qrbox: 250,
+        aspectRatio: 1.0
     });
 
     scanner.render(onScanSuccess);
