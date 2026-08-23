@@ -8,106 +8,196 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body{
-    margin:0;
-    padding:20px;
-    font-family:'Segoe UI',sans-serif;
-    background:#f5f7fb;
+:root {
+    --primary: #1e293b;
+    --accent: #2563eb;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success-bg: #dcfce7;
+    --success-text: #15803d;
+    --error-bg: #fee2e2;
+    --error-text: #b91c1c;
 }
 
-.container{
-    max-width:500px;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 3px 10px rgba(0,0,0,.1);
+body {
+    margin: 0;
+    padding: 30px 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-.logo{
-    width:100px;
-    display:block;
-    margin:auto;
-    margin-bottom:15px;
+.container {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card-bg);
+    padding: 28px 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-h1{
-    text-align:center;
-    color:#003366;
-    margin:10px 0 5px;
+.logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
 }
 
-h3{
-    text-align:center;
-    margin:0 0 20px;
-    font-weight:600;
+h1 {
+    text-align: center;
+    color: var(--primary);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px 0;
+}
+
+h3 {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 16px 0;
 } 
 
-#datetime{
-    text-align:center;
-    margin-bottom:20px;
-    color:#666;
+#datetime {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    background: #f8fafc;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#reader{
-    width:100% !important;
-    border-radius:12px;
-    overflow:hidden;
+.stats {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.stats{
-    display:flex;
-    justify-content:center;
-    margin-bottom:20px;
-}
-
-.stat-card{
-    background:#f8f9fa;
-    border-radius:12px;
-    padding:12px;
-    width:150px;
-    text-align:center;
-}
-
-.stat-card span{
-    display:block;
-    font-size:30px;
-    font-weight:bold;
+.stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 10px 20px;
+    min-width: 130px;
     text-align: center;
 }
 
-.success{
-    background:#d4edda;
-    color:#155724;
-    padding:15px;
-    border-radius:10px;
-    text-align:center;
+.stat-card span {
+    display: block;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
 }
 
-.error{
-    background:#f8d7da;
-    color:#721c24;
-    padding:15px;
-    border-radius:10px;
+.stat-card small {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: var(--text-muted);
 }
 
-.last-student{
-    margin-top:15px;
-    text-align:center;
-    font-weight:bold;
-    font-size:18px;
+#reader {
+    width: 100% !important;
+    border-radius: 14px;
+    overflow: hidden;
+    border: none !important;
+    background: #000;
 }
 
-.footer{
-    margin-top:20px;
-    text-align:center;
-    color:#888;
-    font-size:12px;
-}    
+/* Custom Overrides for html5-qrcode UI elements */
+#reader video {
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+#reader__dashboard {
+    padding: 10px 0 !important;
+}
+
+#result {
+    margin-top: 16px;
+}
+
+.success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+.last-student {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #e2e8f0;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.last-student span {
+    color: var(--text-main);
+    font-weight: 700;
+    display: inline-block;
+    margin-left: 4px;
+}
+
+.footer {
+    margin-top: 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 500;
+}   
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 @media(max-width:480px){
-    h1{
-        font-size:22px;
+    body {
+        padding: 15px 10px;
+    }
+    .container {
+        padding: 20px 16px;
+    }
+    h1 {
+        font-size: 20px;
     }
 }
 </style>
@@ -123,7 +213,9 @@ h3{
     <h1>ABC National High School</h1>
     <h3>Library Attendance Monitoring System</h3>
 
+    <div style="text-align: center;">
     <div id="datetime"></div>
+    </div>
 
     <div class="stats">
         <div class="stat-card">
