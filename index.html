@@ -60,12 +60,14 @@ h1{
     border-radius:12px;
     padding:12px;
     width:150px;
+    text-align:center;
 }
 
 .stat-card span{
     display:block;
     font-size:30px;
     font-weight:bold;
+    text-align: center;
 }
 
 .success{
@@ -73,6 +75,7 @@ h1{
     color:#155724;
     padding:15px;
     border-radius:10px;
+    text-align:center;
 }
 
 .error{
@@ -86,7 +89,15 @@ h1{
     margin-top:15px;
     text-align:center;
     font-weight:bold;
+    font-size:18px;
 }
+
+.footer{
+    margin-top:20px;
+    text-align:center;
+    color:#888;
+    font-size:12px;
+}    
 
 @media(max-width:480px){
     h1{
@@ -103,7 +114,8 @@ h1{
     <!-- Replace logo.png with your school logo -->
     <img src="logo.png" class="logo" alt="School Logo">
 
-    <h1>📚 Library Attendance System</h1>
+    <h1>📚 ABC National High School</h1>
+    <h3>Library Attendance Monitoring System</h3>
 
     <div id="datetime"></div>
 
@@ -123,6 +135,10 @@ h1{
         <span id="lastStudent">None</span>
     </div>
 
+</div>
+    
+<div class="footer">
+Version 1.0 | Powered by QR Technology
 </div>
 
 <script>
@@ -177,8 +193,10 @@ function onScanSuccess(decodedText) {
             document.getElementById("result").innerHTML =
             `
             <div class="success">
-                ✅ Welcome<br>
-                <strong>${data.name}</strong>
+                <div style="font-size:20px;">✅ Welcome</div>
+                <div style="font-size:28px;font-weight:bold;margin-top:5px;">
+                    ${data.name}
+                </div>
             </div>
             `;
 
